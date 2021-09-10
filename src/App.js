@@ -32,7 +32,7 @@ const emotions = [
   'hates',
   'wishes',
   'believes',
-  'hopes for'
+  'hopes'
 ]
 const loves = [
   'his children',
@@ -53,10 +53,10 @@ const fears = [
   'death'
 ]
 const hates = [
-  'when people treat his as lessor because he didn\'t go to college'
+  'when people treat him as lessor because he didn\'t go to college'
 ]
-const wishs = [
-  'his father would be more proud of them'
+const wishes = [
+  'his father would be more proud of him'
 ]
 const believes = [
   'in the resurrection of the dead and the life of the world to come'
