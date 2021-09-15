@@ -1,37 +1,31 @@
 .App-container {
-  display: flex;
-  height: 100vh;
   background: black;
   color: white;
   border: 16px solid white;
   box-sizing: border-box;
+  font-family: 'EditorialNew', serif;
+  width: 100%;
+}
+
+.App-wrap {
+  padding: 32px;
 }
 
 .App-container a {
   color: #F07A71;
 }
 
-.App-text {
+.App-header {
   color: white;
   font-size: 48px;
-  font-family: 'EditorialNew', serif;
   position: relative;
   flex: 1;
   box-sizing: border-box;
-  display: flex;
-  align-items: center;
 }
 
-.App-innerText {
-  padding: 32px;
-}
-
-.App-image {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  overflow: hidden;
-  box-sizing: border-box;
+.App-text {
+  font-size: 21px;
+  padding-top: 16px;
 }
 
 @font-face {

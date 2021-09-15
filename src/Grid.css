@@ -1,0 +1,23 @@
+.Grid-container {
+  font-family: monospace;
+  margin-top: 32px;
+}
+
+.Grid-listItem {
+  width: 100%;
+  display: flex;
+  font-size: 18px;
+  border-bottom: 1px solid white;
+  padding-bottom: 8px;
+  margin-bottom: 10px;
+}
+
+.Grid-header {
+  font-weight: bold;
+  margin-bottom: 16px;
+  border-bottom: none;
+}
+
+.Grid-listItem span {
+  width: 20%;
+}
