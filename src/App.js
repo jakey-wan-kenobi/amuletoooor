@@ -60,16 +60,20 @@ class App extends Component {
       })
       return amulets
     }
-    let byteCount = 64
-    let finalAmulets = []
-    while (byteCount > 4) {
-      let amuletsToAdd = runChecker(byteCount)
-      finalAmulets = finalAmulets.concat(amuletsToAdd)
-      byteCount--
-    }
-    this.setState({
-      results: finalAmulets,
-      loading: false
+    // set timeout because we want the state to update before running this
+    // potentially heavy computation. otherwise loading state won't appear.
+    setTimeout(() => {
+      let byteCount = 64
+      let finalAmulets = []
+      while (byteCount > 4) {
+        let amuletsToAdd = runChecker(byteCount)
+        finalAmulets = finalAmulets.concat(amuletsToAdd)
+        byteCount--
+      }
+      this.setState({
+        results: finalAmulets,
+        loading: false
+      })
     })
   }
   render () {
@@ -107,11 +111,9 @@ class App extends Component {
           <div
             onClick={this.getAmulets}
             className='App-button'>
-            Reveal amulets
+            {!this.state.loading && 'Reveal amulets'}
+            {this.state.loading && 'Searching...'}
           </div>
-          {this.state.loading &&
-            <div style={{ paddingTop: 16, textAlign: 'center', fontSize: 12 }}>Searching...</div>
-          }
         </div>
       </div>
     )
