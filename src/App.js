@@ -26,33 +26,50 @@ const toValidAmulet = (value) => {
 class App extends Component {
   state = {
     text: '',
-    byteCount: 64,
-    results: []
+    results: [],
+    rarityFilter: 4,
+    loading: false
   }
   onChange = (e) => {
     this.setState({
       text: e.target.value
     })
   }
-  onChangeBytes = (e) => {
+  onChangeRarity = (e) => {
     this.setState({
-      byteCount: e.target.value
+      rarityFilter: e.target.value
     })
   }
   getAmulets = () => {
     if (!this.state.text) return
-    let amulets = []
-    let finalText = this.state.text
-    let pattern = new RegExp('.{1,' + this.state.byteCount + '}', 'g')
-    const strings = finalText.match(pattern)
-    strings.forEach((str) => {
-      let potentialAmulet = toValidAmulet(str)
-      if (potentialAmulet) {
-        amulets.push(potentialAmulet)
-      }
-    })
     this.setState({
-      results: amulets
+      loading: true
+    })
+    const runChecker = (byteCount) => {
+      let amulets = []
+      let finalText = this.state.text
+      let pattern = new RegExp('.{1,' + byteCount + '}', 'g')
+      const strings = finalText.match(pattern)
+      strings.forEach((str) => {
+        let potentialAmulet = toValidAmulet(str)
+        if (potentialAmulet) {
+          if (this.state.rarityFilter <= potentialAmulet.count) {
+            amulets.push(potentialAmulet)
+          }
+        }
+      })
+      return amulets
+    }
+    let byteCount = 64
+    let finalAmulets = []
+    while (byteCount > 4) {
+      let amuletsToAdd = runChecker(byteCount)
+      finalAmulets = finalAmulets.concat(amuletsToAdd)
+      byteCount--
+    }
+    this.setState({
+      results: finalAmulets,
+      loading: false
     })
   }
   render () {
@@ -67,9 +84,9 @@ class App extends Component {
         </div>
         <div className='App-results'>
           {
-            this.state.results.map((res) => {
+            this.state.results.map((res, index) => {
               return (
-                <div className='App-resultItem'>
+                <div className='App-resultItem' key={index}>
                   <div className='App-amulet'>{res.value}</div>
                   <div>rarity: {res.count}</div>
                   <div>hash: {res.hash}</div>
@@ -79,18 +96,22 @@ class App extends Component {
           }
         </div>
         <div className='App-controls'>
-          <div className='App-helper'>Paste in a long text, then reveal amulets. Changing length will
-            produce new results (must be 64 bytes or fewer).
+          <div className='App-helper'>Paste in a long text, then reveal amulets.
+            Adjust rarity filter upward from 4 to be more selective. Large datasets
+            may take a moment.
           </div>
           <input
-            placeholder='Length...'
-            value={this.state.byteCount}
-            onChange={this.onChangeBytes} />
+            placeholder='Rarity filter...'
+            value={this.state.rarityFilter}
+            onChange={this.onChangeRarity} />
           <div
             onClick={this.getAmulets}
             className='App-button'>
             Reveal amulets
           </div>
+          {this.state.loading &&
+            <div style={{ paddingTop: 16, textAlign: 'center', fontSize: 12 }}>Searching...</div>
+          }
         </div>
       </div>
     )
