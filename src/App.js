@@ -7,10 +7,10 @@ function App () {
     <div className='App-container'>
       <div className='App-wrap'>
         <div className='App-header'>
-          Market Manipulation
+          These tokens are <span>pumping.</span>
         </div>
         <div className='App-text'>
-          Definition and explanation.
+          Does it feel any different knowing it's synthetic?
         </div>
         <Grid />
       </div>

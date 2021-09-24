@@ -6,21 +6,15 @@ class Grid extends Component {
     let items = Array.from(Array(64).keys())
     return (
       <div className='Grid-container'>
-        <div className='Grid-listItem Grid-header'>
-          <span>Token</span>
-          <span>List Price</span>
-          <span>Last Sale Price</span>
-          <span>Burn Price</span>
-          <span>% change</span>
-        </div>
         {items.map(index => {
           return (
-            <div className='Grid-listItem'>
-              <span>{index}</span>
-              <span>1.2</span>
-              <span>1.8</span>
-              <span>.8</span>
-              <span>⬆️ 62%</span>
+            <div className='Grid-tile'>
+              <div className='Grid-imageContainer'>
+                <div className='Grid-image' />
+              </div>
+              <div>
+                Token 1
+              </div>
             </div>
           )
         })}
