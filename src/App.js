@@ -79,7 +79,7 @@ class App extends Component {
           }
         </div>
         <div className='App-controls'>
-          <div className='App-helper'>Paste in a long text, click gimme amulets. Changing length will
+          <div className='App-helper'>Paste in a long text, then "reveal amulets."" Changing length will
             produce new results (must be 64 bytes or fewer).
           </div>
           <input
@@ -89,7 +89,7 @@ class App extends Component {
           <div
             onClick={this.getAmulets}
             className='App-button'>
-            gimme amulets
+            Reveal amulets
           </div>
         </div>
       </div>
