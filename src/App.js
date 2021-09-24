@@ -1,129 +1,100 @@
+import React, { Component } from 'react'
 import logo from './logo.svg'
 import './App.css'
+// import { text } from './text'
+import { utils } from 'ethers'
 
-const data = [
-  '@beanimaxi',
-  '@iamDCinvestor',
-  '@jebus911',
-  '@justintrimble',
-  '@pranksy',
-  '@crypto888crypto',
-  '@KeyboardMonkey3',
-  '@Vince_Van_Dough'
-]
-
-const getSentenceOne = (
-  love1,
-  love2,
-  love3,
-  emotion,
-  emotionObject, 
-  age,
-  person,
-  pastActivity
-) => {
-  return `He loves ${love1}, ${love2}, and ${love3}. More than anything, he ${emotion} ${emotionObject}. When he was ${age}, his ${person} ${pastActivity}.`
+const getAmuletCount = (hash) => {
+  const matches = hash.match(/(8)\1*/g)
+  if (!matches) return 0
+  return Math.max(...matches.map(match => match.length))
 }
 
-const emotions = [
-  'craves',
-  'desires',
-  'fears',
-  'hates',
-  'wishes',
-  'believes',
-  'hopes for'
-]
-const loves = [
-  'his children',
-  'his mother',
-  'fine wines',
-  'golf',
-  'surfing',
-  'french toast',
-  'gardening'
-]
-const desires = [
-  'power and respect',
-  'to be left alone',
-  'to be considered funny'
-]
-const fears = [
-  'being forgotten',
-  'death'
-]
-const hates = [
-  'when people treat his as lessor because he didn\'t go to college'
-]
-const wishs = [
-  'his father would be more proud of them'
-]
-const believes = [
-  'in the resurrection of the dead and the life of the world to come'
-]
-const hopes = [
-  'to be remembered as a kind person'
-]
-const craves = [
-  'the love and admiration of his peers',
-  'the respect of his children'
-]
-const persons = [
-  'brother',
-  'uncle',
-  'father',
-  'mother',
-  'best friend'
-]
-const pastEvents = [
-  'passed away, and he still misses them to this day',
-  'took him to Disneyland, and he\'ll never forget the feeling of joy that overpowered him'
-]
-
-const assembleSentence = () => {
-  let love1 = loves[Math.floor(Math.random() * loves.length)]
-  let love2 = loves[Math.floor(Math.random() * loves.length)]
-  let love3 = loves[Math.floor(Math.random() * loves.length)]
-  let emotion = emotions[Math.floor(Math.random() * emotions.length)]
-  let emotionObjectsArray = eval(emotion)
-  console.log(emotionObjectsArray)
-  let emotionObject = emotionObjectsArray[Math.floor(Math.random() * emotionObjectsArray.length)]
-  let age = Math.floor(Math.random() * (30 - 1 + 1) + 1)
-  let person = persons[Math.floor(Math.random() * persons.length)]
-  let pastEvent = pastEvents[Math.floor(Math.random() * pastEvents.length)]
-  let sentence = getSentenceOne(love1, love2, love3, emotion, emotionObject, age, person, pastEvent)
-  return sentence
+const isValidAmuletCount = (count) => {
+  return count >= 4
 }
 
-// const replaceItems = (sentenceBones) => {
-//   const words = sentenceBones.split(' ')
-//   let newSentence = assembleSentence()
-//   words.forEach(word => {
-//     console.log(word)
-//     let replacement = word
-//     if (word === '$LOVE') {
-//       console.log('word is love')
-//       replacement = loves[Math.floor(Math.random) * loves.length]
-//     }
-//     newSentence = newSentence + replacement
-//   })
-// }
+const toValidAmulet = (value) => {
+  const bytes = utils.toUtf8Bytes(value)
+  if (bytes.length > 64) return
+  const hash = utils.sha256(bytes)
+  const count = getAmuletCount(hash)
+  if (!isValidAmuletCount(count)) return
+  return {value, hash, count}
+}
 
-function App () {
-  const anon = data[Math.floor(Math.random() * data.length)]
-  const text = assembleSentence()
-  return (
-    <div className='App-container'>
-      <div className='App-text'>
-        <div className='App-innerText'>
-          This is <a href={`https://twitter.com/${anon}`}>{anon}</a>. {text}
+class App extends Component {
+  state = {
+    text: '',
+    byteCount: 64,
+    results: []
+  }
+  onChange = (e) => {
+    this.setState({
+      text: e.target.value
+    })
+  }
+  onChangeBytes = (e) => {
+    this.setState({
+      byteCount: e.target.value
+    })
+  }
+  getAmulets = () => {
+    if (!this.state.text) return
+    let amulets = []
+    let finalText = this.state.text
+    let pattern = new RegExp('.{1,' + this.state.byteCount + '}', 'g')
+    const strings = finalText.match(pattern)
+    strings.forEach((str) => {
+      let potentialAmulet = toValidAmulet(str)
+      if (potentialAmulet) {
+        amulets.push(potentialAmulet)
+      }
+    })
+    this.setState({
+      results: amulets
+    })
+  }
+  render () {
+    return (
+      <div className='App-container'>
+        <div className='App-paste'>
+          <textarea
+            onChange={this.onChange}
+            placeholder='Paste text here...'
+            value={this.state.text}
+            />
+        </div>
+        <div className='App-results'>
+          {
+            this.state.results.map((res) => {
+              return (
+                <div className='App-resultItem'>
+                  <div className='App-amulet'>{res.value}</div>
+                  <div>rarity: {res.count}</div>
+                  <div>hash: {res.hash}</div>
+                </div>
+              )
+            })
+          }
+        </div>
+        <div className='App-controls'>
+          <div className='App-helper'>Paste in a long text, then "reveal amulets."" Changing length will
+            produce new results (must be 64 bytes or fewer).
+          </div>
+          <input
+            placeholder='Length...'
+            value={this.state.byteCount}
+            onChange={this.onChangeBytes} />
+          <div
+            onClick={this.getAmulets}
+            className='App-button'>
+            Reveal amulets
+          </div>
         </div>
       </div>
-      <div className='App-image'>
-        <img src='https://thispersondoesnotexist.com/image' alt='logo' />
-      </div>
-    </div>
-  )
+    )
+  }
 }
 
 export default App
