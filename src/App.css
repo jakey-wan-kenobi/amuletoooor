@@ -32,16 +32,12 @@
 }
 
 .App-button {
-  position: absolute;
-  bottom: 16px;
-  background: white;
-  font-size: 32px;
-  color: black;
+  font-size: 18px;
+  color: white;
   padding: 16px;
   cursor: pointer;
-  left: 50%;
-  transform: translateX(-50%);
-  border: 2px solid black;
+  background: black;
+  text-align: center;
 }
 
 .App-resultItem {
@@ -51,6 +47,28 @@
 .App-amulet {
   font-size: 32px;
   white-space: pre-wrap;
+}
+
+.App-controls {
+  position: absolute;
+  bottom: 16px;
+  background: white;
+  color: black;
+  padding: 16px;
+  right: 16px;
+  max-width: 350px;
+}
+
+.App-helper {
+  margin-bottom: 8px;
+  font-size: 12px;
+}
+
+.App-controls input {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+  margin-bottom: 8px;
 }
 
 @font-face {

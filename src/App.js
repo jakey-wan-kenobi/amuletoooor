@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import logo from './logo.svg'
 import './App.css'
-import { text } from './text'
+// import { text } from './text'
 import { utils } from 'ethers'
 
 const getAmuletCount = (hash) => {
@@ -25,19 +25,32 @@ const toValidAmulet = (value) => {
 
 class App extends Component {
   state = {
-    text: text,
+    text: '',
+    byteCount: 64,
     results: []
   }
+  onChange = (e) => {
+    this.setState({
+      text: e.target.value
+    })
+  }
+  onChangeBytes = (e) => {
+    this.setState({
+      byteCount: e.target.value
+    })
+  }
   getAmulets = () => {
+    if (!this.state.text) return
     let amulets = []
-    const strings = this.state.text.match(/.{1,64}/g)
+    let finalText = this.state.text
+    let pattern = new RegExp('.{1,' + this.state.byteCount + '}', 'g')
+    const strings = finalText.match(pattern)
     strings.forEach((str) => {
       let potentialAmulet = toValidAmulet(str)
       if (potentialAmulet) {
         amulets.push(potentialAmulet)
       }
     })
-    console.log('AMULETS', amulets)
     this.setState({
       results: amulets
     })
@@ -47,6 +60,7 @@ class App extends Component {
       <div className='App-container'>
         <div className='App-paste'>
           <textarea
+            onChange={this.onChange}
             placeholder='Paste text here...'
             value={this.state.text}
             />
@@ -64,10 +78,19 @@ class App extends Component {
             })
           }
         </div>
-        <div
-          onClick={this.getAmulets}
-          className='App-button'>
-          gimme amulets
+        <div className='App-controls'>
+          <div className='App-helper'>Paste in a long text, click gimme amulets. Changing length will
+            produce new results (must be 64 bytes or fewer).
+          </div>
+          <input
+            placeholder='Length...'
+            value={this.state.byteCount}
+            onChange={this.onChangeBytes} />
+          <div
+            onClick={this.getAmulets}
+            className='App-button'>
+            gimme amulets
+          </div>
         </div>
       </div>
     )
